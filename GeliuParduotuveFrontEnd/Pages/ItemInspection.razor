@@ -1,0 +1,54 @@
+﻿@page "/ItemIdGoesHere"
+@using MatBlazor
+@using Services
+@using Models
+
+<PageTitle>Index</PageTitle>
+
+<h1>Internetinė gėlių parduotuvė</h1>
+
+
+<MatTabGroup>
+    <MatTab Label="Katalogas">
+        <br>
+        <div class="mat-layout-grid">
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                <p>
+                    <MatTextField TValue="String" Label="Paieška" Icon="search" FullWidth="true"  IconTrailing="true" Outlined="true"></MatTextField>
+                </p>
+            </div>
+            <div class="mat-layout-grid-inner">
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-7">
+                        <MatCardContent>
+                            <MatCardMedia Wide="true" ImageUrl="https://media.cloudidd.com/media/pro-mediaprint/478567.jpg"></MatCardMedia>
+                        </MatCardContent>
+                    </div>
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5">
+                        <p class="inspectorActions">
+                        <h1>Gėlės pavadinimas</h1>
+                        <br>
+                        <p>Kaina: 5€</p>
+                        <br>
+                        <p>Kiekis: <MatTextField TValue="String" Label="1" Outlined="true"></MatTextField></p>
+                        <br>
+                            <MatButtonLink Outlined="true">Į krepšelį</MatButtonLink>
+                        <br>
+                            <MatButtonLink Outlined="true">Į puokštę</MatButtonLink>
+                    </p>
+                    </div>
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <p>Informacija:</p>
+                        <br>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    </div>
+            </div>
+        </div>
+    </MatTab>
+
+    <MatTab Label="Prisijungti">
+        Second Content
+    </MatTab>
+</MatTabGroup>
+
+@code {
+}
