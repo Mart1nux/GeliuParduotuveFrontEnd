@@ -1,6 +1,7 @@
 ﻿using GeliuParduotuveFrontEnd.Models;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
+using System.Net.Http;
 using System.Net.Http.Headers;
 
 namespace GeliuParduotuveFrontEnd.Services
@@ -15,10 +16,10 @@ namespace GeliuParduotuveFrontEnd.Services
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(m_baseUrl);
 
-            client.DefaultRequestHeaders.Accept.Add(
-            new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             HttpResponseMessage response = client.GetAsync($"items").Result;
+
             if (response.IsSuccessStatusCode)
             {
                 string empResponse = await response.Content.ReadAsStringAsync();
@@ -28,6 +29,39 @@ namespace GeliuParduotuveFrontEnd.Services
             client.Dispose();
 
             return items;
+        }
+
+        public async Task<Item> GetItemById(int id)
+        {
+            Item item = new Item();
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(m_baseUrl);
+
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            HttpResponseMessage response = client.GetAsync($"items/{id}").Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                string empResponse = await response.Content.ReadAsStringAsync();
+                item = JsonConvert.DeserializeObject<Item>(empResponse);
+            }
+
+            client.Dispose();
+
+            return item;
+        }
+
+        public void UpdateItemById(int id, Item item)
+        {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(m_baseUrl);
+
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            System.Net.Http.HttpContent content = new StringContent(JsonConvert.SerializeObject(item));
+            _ = client.PutAsync($"items/{id}", content).Result;
+
+            client.Dispose();
         }
 
         public async Task<List<Customer>> GetAllCustomers()

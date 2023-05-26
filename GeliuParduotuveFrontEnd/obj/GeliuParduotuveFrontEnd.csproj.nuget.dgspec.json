@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\marti\\source\\repos\\GeliuParduotuveFrontEnd\\GeliuParduotuveFrontEnd\\GeliuParduotuveFrontEnd.csproj": {}
+    "C:\\Users\\marti\\source\\repos\\GeliuParduotuveFrontEndOnline\\GeliuParduotuveFrontEnd\\GeliuParduotuveFrontEnd.csproj": {}
   },
   "projects": {
-    "C:\\Users\\marti\\source\\repos\\GeliuParduotuveFrontEnd\\GeliuParduotuveFrontEnd\\GeliuParduotuveFrontEnd.csproj": {
+    "C:\\Users\\marti\\source\\repos\\GeliuParduotuveFrontEndOnline\\GeliuParduotuveFrontEnd\\GeliuParduotuveFrontEnd.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\marti\\source\\repos\\GeliuParduotuveFrontEnd\\GeliuParduotuveFrontEnd\\GeliuParduotuveFrontEnd.csproj",
+        "projectUniqueName": "C:\\Users\\marti\\source\\repos\\GeliuParduotuveFrontEndOnline\\GeliuParduotuveFrontEnd\\GeliuParduotuveFrontEnd.csproj",
         "projectName": "GeliuParduotuveFrontEnd",
-        "projectPath": "C:\\Users\\marti\\source\\repos\\GeliuParduotuveFrontEnd\\GeliuParduotuveFrontEnd\\GeliuParduotuveFrontEnd.csproj",
+        "projectPath": "C:\\Users\\marti\\source\\repos\\GeliuParduotuveFrontEndOnline\\GeliuParduotuveFrontEnd\\GeliuParduotuveFrontEnd.csproj",
         "packagesPath": "C:\\Users\\marti\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\marti\\source\\repos\\GeliuParduotuveFrontEnd\\GeliuParduotuveFrontEnd\\obj\\",
+        "outputPath": "C:\\Users\\marti\\source\\repos\\GeliuParduotuveFrontEndOnline\\GeliuParduotuveFrontEnd\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Users\\marti\\AppData\\Roaming\\Godot\\mono\\GodotNuGetFallbackFolder"
