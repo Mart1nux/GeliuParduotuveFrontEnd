@@ -1,7 +1,8 @@
-﻿@page "/seller/item/{Id:int}"
+﻿@page "/seller/{SellerId:int}/item/{ItemId:int}"
 @using MatBlazor
 @using Services
 @using Models
+@inject NavigationManager NavigationManager
 
 <PageTitle>Index</PageTitle>
 
@@ -9,7 +10,7 @@
 
 
 <MatTabGroup>
-    <MatTab Label="Katalogas">
+    <MatTab Label="Katalogas" @onclick='() => NavigationManager.NavigateTo(returnPage)'>
         <br>
         <div class="mat-layout-grid">
             <div class="mat-layout-grid-inner">
@@ -28,8 +29,9 @@
                         <br>
                         <p>Kiekis: <MatTextField @bind-Value="@item.Amount" TValue="int" Label="Likučių kiekis" Outlined="true"></MatTextField></p>
                         <br>
-                            <MatButtonLink Outlined="true" Href="/MainPage" OnClick="() => UpdateItem()">Atnaujinti</MatButtonLink>
+                    <MatButtonLink Outlined="true" Href="@thisPage" OnClick="() => UpdateItem()">Atnaujinti</MatButtonLink>
                     </p>
+                    <p>@warning</p>
                     </div>
                     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
                         <p>Informacija:</p>
@@ -39,28 +41,47 @@
             </div>
         </div>
     </MatTab>
-
-    <MatTab Label="Prisijungti">
-        Second Content
+    <MatTab Label="Atsijungti" @onclick='() => NavigationManager.NavigateTo("/")'>
+        To be done
     </MatTab>
 </MatTabGroup>
 
 @code {
     [Parameter]
-    public int Id { get; set; }
+    public int ItemId { get; set; }
+
+    [Parameter]
+    public int SellerId { get; set; }
 
     public Item item = new Item();
 
+    public string returnPage;
+
     APIController apiController;
+
+    public string warning;
+
+    public string thisPage;
 
     protected override async Task OnInitializedAsync()
     {
         apiController = new APIController();
-        item = await apiController.GetItemById(Id);
+        item = await apiController.GetItemById(SellerId, ItemId);
+        returnPage = "/SellerMainPage/" + SellerId;
+        warning = new String("");
+        thisPage = "/seller/" + SellerId + "/item/" + ItemId;
     }
 
     private void UpdateItem()
     {
-        apiController.UpdateItemById(Id, item);
+        int response = apiController.UpdateItemById(SellerId, ItemId, item);
+        if(response == 0)
+        {
+            NavigationManager.NavigateTo(returnPage);
+        }
+        else
+        {
+            warning = "Įvyko konfliktas. Jei vis tiek norite išsaugoti savo reikšmę - spauskite vėl ant 'Atnaujinti' mygtuko.";
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/SellerMainPage/{Id:int}"
 @using MatBlazor
 @using Services
 @using Models
@@ -45,72 +45,48 @@
             </div>
         </div>
     </MatTab>
-    <MatTab Label="Prisijungti">
-        <br />
-        <br />
-        <p class="centerText">
-            Naudotojo vardas
-            <br />
-            <MatTextField @bind-Value="@username" TValue="String" Outlined="true"></MatTextField>
-            <br />
-            <br />
-            <br />
-            Slaptažodis
-            <br />
-            <MatTextField @bind-Value="@password" TValue="String" Outlined="true"></MatTextField>
-            <br />
-            <br />
-            <MatButtonLink Href="" @onclick="() => LogIn(username, password)" Unelevated="true">Prisijungti</MatButtonLink>
-        <br/>
-        <p style="color:firebrick">@prisijungimoBusena</p>
-            <br />
-            Neturite paskyros? Užsiregistruokite čią:
-            <br />
-            <br />
-            <MatButtonLink Unelevated="true">Registracija</MatButtonLink>
-        </p>
+    <MatTab Label="Užsakymai">
+            <div class="mat-layout-grid-inner">
+                 @foreach (var order in orders)
+                    {
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <MatCard class="demo-mat-card">
+                            <MatCardContent>
+                                <div class="demo-mat-card-content">
+                                    <p>Pavadinimas</p>
+                                    <p>Uzsakymo data: @order.OrderCreateDate</p>
+                                    <p>Kiekis: 1</p>
+                                    <p>Iš viso sumokėta: 10.00€      <MatButton Class="button" Outlined="true">Detaliau</MatButton></p>
+                                </div>
+                            </MatCardContent>
+                        </MatCard>
+                    </div>
+                    }
+            </div>
+    </MatTab>
+    <MatTab Label="Atsijungti" @onclick='() => NavigationManager.NavigateTo("/")'>
+        To be done
     </MatTab>
 </MatTabGroup>
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
+
     List<Item> items = new List<Item>();
 
-    APIController apiController;
-
-    string username = new string("");
-    string password = new string("");
-
-    string prisijungimoBusena = new string("");
+    List<Order> orders = new List<Order>();
 
     protected override async Task OnInitializedAsync()
     {
-        apiController = new APIController();
-        items = await apiController.GetAllItems(0);
+        APIController apiController = new APIController();
+        items = await apiController.GetAllItems(Id);
+
+        orders = await apiController.GetAllOrders(Id);
     }
 
     public void NavigateToIndividualItem(int id)
     {
-        NavigationManager.NavigateTo($"item/{id}");
-    }
-
-    public async void LogIn(string username, string password)
-    {
-        Customer customer = await apiController.GetUserWithLogin(0, username, password);
-        if(customer.Id != 0)
-        {
-            if (customer.Role == "seller")
-            {
-                NavigationManager.NavigateTo($"SellerMainPage/{customer.Id}", forceLoad: true);
-            }
-            else
-            {
-                NavigationManager.NavigateTo($"MainPage/{customer.Id}", forceLoad: true);
-            }
-        }
-        else
-        {
-            prisijungimoBusena = "Neteisingai įvesti duomenys.";
-            StateHasChanged();
-        }
+        NavigationManager.NavigateTo($"/seller/{Id}/item/{id}");
     }
 }
