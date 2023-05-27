@@ -1,0 +1,80 @@
+﻿@page "/customer/{CustomerId:int}/item/{ItemId:int}"
+@using MatBlazor
+@using Services
+@using Models
+@inject NavigationManager NavigationManager
+
+<PageTitle>Index</PageTitle>
+
+<h1>Internetinė gėlių parduotuvė</h1>
+
+
+<MatTabGroup>
+    <MatTab Label="Katalogas" @onclick='() => NavigationManager.NavigateTo(returnPage)'>
+        <br>
+        <div class="mat-layout-grid">
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                <p>
+                    <MatTextField TValue="String" Label="Paieška" Icon="search" FullWidth="true" IconTrailing="true" Outlined="true"></MatTextField>
+                </p>
+            </div>
+            <div class="mat-layout-grid-inner">
+                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-7">
+                    <MatCardContent>
+                        <MatCardMedia Wide="true" ImageUrl=@item.Image></MatCardMedia>
+                    </MatCardContent>
+                </div>
+                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5">
+                    <p class="inspectorActions">
+                        <h1>@item.Name</h1>
+                        <br>
+                    <p>Kaina: @item.Price €</p>
+                    <br>
+                    <p>Kiekis: <MatTextField TValue="int" Outlined="true" @bind-Value="kiekis"></MatTextField></p>
+                    <br>
+                    <MatButtonLink Outlined="true" Href="@returnPage" @onclick='() => ItemToCart()'>Į krepšelį</MatButtonLink>
+                    <br>
+                    <MatButtonLink Disabled="true" Outlined="true">Į puokštę</MatButtonLink>
+                    </p>
+                </div>
+                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                    <p>Informacija:</p>
+                    <br>
+                    <p>@item.Description</p>
+                </div>
+            </div>
+        </div>
+    </MatTab>
+    <MatTab Label="Atsijungti" @onclick='() => NavigationManager.NavigateTo("/")'>
+        To be done
+    </MatTab>
+</MatTabGroup>
+
+@code {
+    [Parameter]
+    public int ItemId { get; set; }
+
+    [Parameter]
+    public int CustomerId { get; set; }
+
+    public Item item = new Item();
+
+    public int kiekis;
+
+    public string returnPage;
+
+    APIController apiController;
+
+    protected override async Task OnInitializedAsync()
+    {
+        kiekis = 1;
+        apiController = new APIController();
+        item = await apiController.GetItemById(CustomerId, ItemId);
+        returnPage = "/MainPage/" + CustomerId;
+    }
+
+    private void ItemToCart()
+    {
+        apiController.PutToCart(CustomerId, ItemId, kiekis);
+    }
+}

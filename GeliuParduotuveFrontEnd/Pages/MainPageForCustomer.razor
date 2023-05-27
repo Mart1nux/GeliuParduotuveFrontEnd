@@ -46,50 +46,49 @@
         </div>
     </MatTab>
     <MatTab Label="Krepšelis">
-        <div class="mat-layout-grid-inner">
+        @if (cartItems.Count > 0)
+        {
+            <div class="mat-layout-grid-inner">
                 <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
                     <MatCard class="demo-mat-card">
                         <MatCardContent>
-                            <MatCard class="demo-mat-card">
-                        <MatCardContent>
-                            <div class="demo-mat-card-content">
-                                <p>Pavadinimas</p>
-                                <p>Kiekis: 1</p>
-                                <p>Kaina: 10.00€      <MatButton Class="button" Outlined="true">Detaliau</MatButton></p>
-                            </div>
-                        </MatCardContent>
-                    </MatCard>
-                        <MatCard class="demo-mat-card">
-                            <MatCardContent>
-                                <div class="demo-mat-card-content">
-                                    <p>Pavadinimas</p>
-                                    <p>Kiekis: 1</p>
-                                    <p>Kaina: 10.00€      <MatButton Class="button" Outlined="true">Detaliau</MatButton></p>
-                                </div>
-                            </MatCardContent>
-                        </MatCard>
-                        <MatButton Class="button" Outlined="true">Pirkti</MatButton>
+                            @foreach (var item in cartItems)
+                            {
+                                <MatCard class="demo-mat-card">
+                                    <MatCardContent>
+                                        <div class="demo-mat-card-content">
+                                            <p>@GetItemById(item.ItemId).Result.Name</p>
+                                            <p>Kiekis: @item.Amount</p>
+                                            <p>Kaina: @CalculatePrice(GetItemById(item.ItemId).Result.Price, @item.Amount) €      <MatButton Class="button" Outlined="true">Detaliau</MatButton></p>
+                                        </div>
+                                    </MatCardContent>
+                                </MatCard>
+                            }
+                            <MatButton Class="button" @onclick='() => BuyCart()' Outlined="true">Pirkti</MatButton>
                         </MatCardContent>
                     </MatCard>
                 </div>
-        </div>
+            </div>
+        }
     </MatTab>
     <MatTab Label="Istorija">
             <div class="mat-layout-grid-inner">
-                 @foreach (var order in orders)
+                 @foreach (var order in UpdateHistory().Result)
                     {
-                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                        <MatCard class="demo-mat-card">
-                            <MatCardContent>
-                                <div class="demo-mat-card-content">
-                                    <p>Pavadinimas</p>
-                                    <p>Uzsakymo data: @order.OrderCreateDate</p>
-                                    <p>Kiekis: 1</p>
-                                    <p>Iš viso sumokėta: 10.00€      <MatButton Class="button" Outlined="true">Detaliau</MatButton></p>
-                                </div>
-                            </MatCardContent>
-                        </MatCard>
-                    </div>
+                    @if (order.CustomerId == Id)
+                        {
+                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                            <MatCard class="demo-mat-card">
+                                <MatCardContent>
+                                    <div class="demo-mat-card-content">
+                                        <p>Uzsakymo data: @order.OrderCreateDate</p>
+                                        <p>@order.OrderStatus</p>
+                                        <p>Kiekis: 1 <MatButton Disabled="true" Class="button" Outlined="true">Detaliau</MatButton></p>
+                                    </div>
+                                </MatCardContent>
+                            </MatCard>
+                        </div>
+                        }
                     }
             </div>
     </MatTab>
@@ -106,16 +105,44 @@
 
     List<Order> orders = new List<Order>();
 
+    APIController apiController = new APIController();
+
+    List<CartItem> cartItems = new List<CartItem>();
+
     protected override async Task OnInitializedAsync()
     {
-        APIController apiController = new APIController();
-        items = await apiController.GetAllItems();
+        items = await apiController.GetAllItems(Id);
 
-        orders = await apiController.GetAllOrders();
+        orders = await apiController.GetAllOrders(Id);
+
+        cartItems = await apiController.GetCartByUser(Id);
     }
 
     public void NavigateToIndividualItem(int id)
     {
-        NavigationManager.NavigateTo($"/seller/item/{id}");
+        NavigationManager.NavigateTo($"/customer/{Id}/item/{id}");
+    }
+
+    public async Task<Item> GetItemById(int id)
+    {
+        return await apiController.GetItemById(Id, id);
+    }
+
+    public decimal CalculatePrice(decimal price, int amount)
+    {
+        return price * amount;
+    }
+
+    public void BuyCart()
+    {
+        apiController.MakeCartIntoOrder(Id);
+        cartItems.Clear();
+        StateHasChanged();
+    }
+
+    public async Task<List<Order>> UpdateHistory()
+    {
+        orders = await apiController.GetAllOrders(Id);
+        return orders;
     }
 }

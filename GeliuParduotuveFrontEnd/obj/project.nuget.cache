@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "6/DpjDZtPJ8wV9TKg3V2BeRfvXXzEpb3DStl72cNgi7E+KBYbNntKcS/yiFDUA1LBZCys/FxVUkyM5YQ4WDrDw==",
+  "dgSpecHash": "5ASg/8f/q7bkok9P85lFdYwoN70enR77FXoBwZ3UUk7pZgjAmhOhxhQ2+om6pNA/8frLAxXvHijY/20VDWRZXQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\marti\\source\\repos\\GeliuParduotuveFrontEndOnline\\GeliuParduotuveFrontEnd\\GeliuParduotuveFrontEnd.csproj",
+  "projectFilePath": "C:\\Users\\marti\\source\\repos\\GeliuParduotuve frontas\\GeliuParduotuveFrontEnd\\GeliuParduotuveFrontEnd\\GeliuParduotuveFrontEnd.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\marti\\.nuget\\packages\\embeddedblazorcontent\\1.10.0\\embeddedblazorcontent.1.10.0.nupkg.sha512",
     "C:\\Users\\marti\\.nuget\\packages\\matblazor\\2.10.0\\matblazor.2.10.0.nupkg.sha512",
