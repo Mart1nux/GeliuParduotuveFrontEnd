@@ -75,3 +75,7 @@ a, .btn-link {
     text-align: center;
 }
 
+[class^="centerText"] {
+    text-align: center;
+}
+

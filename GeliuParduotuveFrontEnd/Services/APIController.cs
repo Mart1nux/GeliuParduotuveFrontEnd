@@ -1,6 +1,7 @@
 ﻿using GeliuParduotuveFrontEnd.Models;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
+using System.Net.Http;
 using System.Net.Http.Headers;
 
 namespace GeliuParduotuveFrontEnd.Services
@@ -9,16 +10,39 @@ namespace GeliuParduotuveFrontEnd.Services
     {
         private readonly string m_baseUrl = "http://localhost:8080/GeliuParduotuve/api/";
 
+        public async Task<int> GetUserWithLogin(string username, string password)
+        {
+            Customer customer = new Customer();
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(m_baseUrl);
+
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            System.Net.Http.HttpContent content = new StringContent($"{{\"username\": \"{username}\", \"password\": \"{password}\"}}", System.Text.Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await client.PostAsync($"login", content).ConfigureAwait(false);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string empResponse = await response.Content.ReadAsStringAsync();
+                customer = JsonConvert.DeserializeObject<Customer>(empResponse);
+            }
+
+            client.Dispose();
+
+            return customer.Id;
+        }
+
         public async Task<List<Item>> GetAllItems()
         {
             List<Item> items = new List<Item>();
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(m_baseUrl);
 
-            client.DefaultRequestHeaders.Accept.Add(
-            new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             HttpResponseMessage response = client.GetAsync($"items").Result;
+
             if (response.IsSuccessStatusCode)
             {
                 string empResponse = await response.Content.ReadAsStringAsync();
@@ -28,6 +52,39 @@ namespace GeliuParduotuveFrontEnd.Services
             client.Dispose();
 
             return items;
+        }
+
+        public async Task<Item> GetItemById(int id)
+        {
+            Item item = new Item();
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(m_baseUrl);
+
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            HttpResponseMessage response = client.GetAsync($"items/{id}").Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                string empResponse = await response.Content.ReadAsStringAsync();
+                item = JsonConvert.DeserializeObject<Item>(empResponse);
+            }
+
+            client.Dispose();
+
+            return item;
+        }
+
+        public void UpdateItemById(int id, Item item)
+        {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(m_baseUrl);
+
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            System.Net.Http.HttpContent content = new StringContent($"{{\"sellerId\": {item.SellerId}, \"name\": \"{item.Name}\", \"amount\": {item.Amount}, \"price\": {item.Price}, \"description\": \"{item.Description}\", \"image\": \"{item.Image}\"}}", System.Text.Encoding.UTF8, "application/json");
+            HttpResponseMessage response = client.PutAsync($"items/{id}", content).Result;
+
+            client.Dispose();
         }
 
         public async Task<List<Customer>> GetAllCustomers()

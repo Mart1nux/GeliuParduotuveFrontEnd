@@ -1,4 +1,4 @@
-﻿@page "/item/{Id:int}"
+﻿@page "/seller/item/{Id:int}"
 @using MatBlazor
 @using Services
 @using Models
@@ -12,34 +12,29 @@
     <MatTab Label="Katalogas">
         <br>
         <div class="mat-layout-grid">
-            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
-                <p>
-                    <MatTextField TValue="String" Label="Paieška" Icon="search" FullWidth="true"  IconTrailing="true" Outlined="true"></MatTextField>
-                </p>
-            </div>
             <div class="mat-layout-grid-inner">
                     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-7">
                         <MatCardContent>
                             <MatCardMedia Wide="true" ImageUrl=@item.Image></MatCardMedia>
+                        <MatTextField @bind-Value="@item.Image" Label="Nuoroda" Outlined="true"></MatTextField>
                         </MatCardContent>
                     </div>
                     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5">
                         <p class="inspectorActions">
-                        <h1>@item.Name</h1>
+                        <MatTextField @bind-Value="@item.Name" Label="Pavadinimas" Outlined="true"></MatTextField>
                         <br>
-                        <p>Kaina: @item.Price €</p>
+                        <br />
+                    <p>Kaina: <MatTextField @bind-Value="@item.Price" Label="Kaina" Outlined="true"></MatTextField> €</p>
                         <br>
-                        <p>Kiekis: <MatTextField TValue="String" Label="1" Outlined="true"></MatTextField></p>
+                        <p>Kiekis: <MatTextField @bind-Value="@item.Amount" TValue="int" Label="Likučių kiekis" Outlined="true"></MatTextField></p>
                         <br>
-                            <MatButtonLink Disabled="true" Outlined="true">Į krepšelį</MatButtonLink>
-                        <br>
-                    <MatButtonLink Disabled="true"  Outlined="true">Į puokštę</MatButtonLink>
-                           </p>
+                            <MatButtonLink Outlined="true" Href="/MainPage" OnClick="() => UpdateItem()">Atnaujinti</MatButtonLink>
+                    </p>
                     </div>
                     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
                         <p>Informacija:</p>
                         <br>
-                        <p>@item.Description</p>
+                    <p><MatTextField @bind-Value="@item.Description" Label="Aprašymas" FullWidth="true" Outlined="true"></MatTextField></p>
                     </div>
             </div>
         </div>
@@ -56,9 +51,16 @@
 
     public Item item = new Item();
 
+    APIController apiController;
+
     protected override async Task OnInitializedAsync()
     {
-        APIController apiController = new APIController();
+        apiController = new APIController();
         item = await apiController.GetItemById(Id);
+    }
+
+    private void UpdateItem()
+    {
+        apiController.UpdateItemById(Id, item);
     }
 }

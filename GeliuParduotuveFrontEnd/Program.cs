@@ -2,6 +2,7 @@ using GeliuParduotuveFrontEnd.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using EmbeddedBlazorContent;
+using GeliuParduotuveFrontEnd.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
