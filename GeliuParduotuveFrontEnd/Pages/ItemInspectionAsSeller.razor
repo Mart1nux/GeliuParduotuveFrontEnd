@@ -29,8 +29,9 @@
                         <br>
                         <p>Kiekis: <MatTextField @bind-Value="@item.Amount" TValue="int" Label="Likučių kiekis" Outlined="true"></MatTextField></p>
                         <br>
-                    <MatButtonLink Outlined="true" Href="@returnPage" OnClick="() => UpdateItem()">Atnaujinti</MatButtonLink>
+                    <MatButtonLink Outlined="true" Href="@thisPage" OnClick="() => UpdateItem()">Atnaujinti</MatButtonLink>
                     </p>
+                    <p>@warning</p>
                     </div>
                     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
                         <p>Informacija:</p>
@@ -58,15 +59,29 @@
 
     APIController apiController;
 
+    public string warning;
+
+    public string thisPage;
+
     protected override async Task OnInitializedAsync()
     {
         apiController = new APIController();
         item = await apiController.GetItemById(SellerId, ItemId);
         returnPage = "/SellerMainPage/" + SellerId;
+        warning = new String("");
+        thisPage = "/seller/" + SellerId + "/item/" + ItemId;
     }
 
     private void UpdateItem()
     {
-        apiController.UpdateItemById(SellerId, ItemId, item);
+        int response = apiController.UpdateItemById(SellerId, ItemId, item);
+        if(response == 0)
+        {
+            NavigationManager.NavigateTo(returnPage);
+        }
+        else
+        {
+            warning = "Įvyko konfliktas. Jei vis tiek norite išsaugoti savo reikšmę - spauskite vėl ant 'Atnaujinti' mygtuko.";
+        }
     }
 }

@@ -123,7 +123,7 @@ namespace GeliuParduotuveFrontEnd.Services
             return item;
         }
 
-        public void UpdateItemById(int userId, int id, Item item)
+        public int UpdateItemById(int userId, int id, Item item)
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(m_baseUrl);
@@ -132,9 +132,14 @@ namespace GeliuParduotuveFrontEnd.Services
             System.Net.Http.HttpContent content = new StringContent($"{{\"callerId\": {userId}, \"sellerId\": {item.SellerId}, \"name\": \"{item.Name}\", \"amount\": {item.Amount}, \"price\": {item.Price}, \"description\": \"{item.Description}\", \"image\": \"{item.Image}\"}}", System.Text.Encoding.UTF8, "application/json");
             HttpResponseMessage response = client.PutAsync($"items/{id}", content).Result;
 
-            Console.Out.WriteLine(response);
-
             client.Dispose();
+
+            if ((int)response.StatusCode == 409)
+            {
+                return 1;
+            }
+
+            return 0;
         }
 
         public async Task<List<Customer>> GetAllCustomers(int userId)
