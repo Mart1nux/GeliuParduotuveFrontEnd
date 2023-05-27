@@ -2,6 +2,7 @@
 @using MatBlazor
 @using Services
 @using Models
+@inject NavigationManager NavigationManager
 
 <PageTitle>Index</PageTitle>
 
@@ -46,7 +47,29 @@
     </MatTab>
 
     <MatTab Label="Prisijungti">
-        Second Content
+        <br />
+        <br />
+        <p class="centerText">
+            Naudotojo vardas
+            <br />
+            <MatTextField @bind-Value="@username" TValue="String" Outlined="true"></MatTextField>
+            <br />
+            <br />
+            <br />
+            Slaptažodis
+            <br />
+            <MatTextField @bind-Value="@password" TValue="String" Outlined="true"></MatTextField>
+            <br />
+            <br />
+            <MatButtonLink Href="@path" @onclick="() => LogIn(username, password)" Unelevated="true">Prisijungti</MatButtonLink>
+            <br />
+        <p style="color:firebrick">@prisijungimoBusena</p>
+        <br />
+        Neturite paskyros? Užsiregistruokite čią:
+        <br />
+        <br />
+        <MatButtonLink Unelevated="true">Registracija</MatButtonLink>
+        </p>
     </MatTab>
 </MatTabGroup>
 
@@ -54,11 +77,42 @@
     [Parameter]
     public int Id { get; set; }
 
+    APIController apiController;
+
+    string username = new string("");
+    string password = new string("");
+
+    string prisijungimoBusena = new string("");
+
+    string path;
+
     public Item item = new Item();
 
     protected override async Task OnInitializedAsync()
     {
-        APIController apiController = new APIController();
+        apiController = new APIController();
         item = await apiController.GetItemById(0, Id);
+        path = "/item/" + Id;
+    }
+
+    public async void LogIn(string username, string password)
+    {
+        Customer customer = await apiController.GetUserWithLogin(0, username, password);
+        if (customer.Id != 0)
+        {
+            if (customer.Role == "seller")
+            {
+                NavigationManager.NavigateTo($"SellerMainPage/{customer.Id}", forceLoad: true);
+            }
+            else
+            {
+                NavigationManager.NavigateTo($"MainPage/{customer.Id}", forceLoad: true);
+            }
+        }
+        else
+        {
+            prisijungimoBusena = "Neteisingai įvesti duomenys.";
+            StateHasChanged();
+        }
     }
 }
